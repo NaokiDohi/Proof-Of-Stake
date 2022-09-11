@@ -1,4 +1,5 @@
-from Transaction import Transaction
+from transaction import Transaction
+from wallet import Wallet
 
 if __name__ == '__main__':
     sender = 'sender'
@@ -7,5 +8,12 @@ if __name__ == '__main__':
     type = 'TRANSFER'
 
     transaction = Transaction(sender, reciver, amount, type)
-    print(transaction)
-    print(transaction.to_json())
+    # print(transaction)
+    print(f"\n{transaction.to_json()}\n")
+
+    wallet = Wallet()
+    signature = wallet.sign(transaction.to_json())
+    print(signature)
+
+    transaction.sign(signature)
+    print(f"\n{transaction.to_json()}\n")
