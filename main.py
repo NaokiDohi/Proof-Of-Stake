@@ -9,11 +9,16 @@ if __name__ == '__main__':
 
     transaction = Transaction(sender, reciver, amount, type)
     # print(transaction)
-    print(f"\n{transaction.to_json()}\n")
+    # print(f"\n{transaction.to_json()}\n")
 
     wallet = Wallet()
     signature = wallet.sign(transaction.to_json())
-    print(signature)
+    # print(signature)
 
-    transaction.sign(signature)
-    print(f"\n{transaction.to_json()}\n")
+    # transaction.sign(signature)
+    # print(f"\n{transaction.to_json()}\n")
+
+    signature_valid = Wallet.signatureValid(
+        transaction.to_json(), signature, wallet.publicKeyString())
+
+    print(signature_valid)
