@@ -1,5 +1,6 @@
 import uuid
 import time
+import copy
 
 
 class Transaction():
@@ -17,3 +18,9 @@ class Transaction():
 
     def sign(self, signature):
         self.signature = signature
+
+    def payload(self):
+        # deepcopy is used for original data can not changed when we validate signature.
+        json_representation = copy.deepcopy(self.to_json())
+        json_representation['signature'] = ''
+        return json_representation

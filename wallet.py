@@ -27,4 +27,3 @@ class Wallet():
         publickey_string = self.keyPair.publickey().exportKey(
             'PEM').decode('utf-8')
         return publickey_string
-    

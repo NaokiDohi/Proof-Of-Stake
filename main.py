@@ -8,17 +8,18 @@ if __name__ == '__main__':
     type = 'TRANSFER'
 
     transaction = Transaction(sender, reciver, amount, type)
-    # print(transaction)
-    # print(f"\n{transaction.to_json()}\n")
+    # print(f"transaction\n{transaction.to_json()}\n")
 
     wallet = Wallet()
     signature = wallet.sign(transaction.to_json())
     # print(signature)
 
-    # transaction.sign(signature)
+    # It assign a signature for transaction parameter.
+    transaction.sign(signature)
     # print(f"\n{transaction.to_json()}\n")
 
     signature_valid = Wallet.signatureValid(
-        transaction.to_json(), signature, wallet.publicKeyString())
-
+        transaction.payload(), signature, wallet.publicKeyString()
+    )
     print(signature_valid)
+    print(f"\n{transaction.to_json()}\n")
