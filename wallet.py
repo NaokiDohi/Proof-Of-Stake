@@ -1,6 +1,7 @@
 from Crypto.PublicKey import RSA
 from Crypto.Signature import PKCS1_v1_5
 from utils import Utils
+from transaction import Transaction
 
 
 class Wallet():
@@ -27,3 +28,16 @@ class Wallet():
         publickey_string = self.keyPair.publickey().exportKey(
             'PEM').decode('utf-8')
         return publickey_string
+
+    def createTransaction(self, reciver, amount, type):
+        transaction = Transaction(
+            self.publicKeyString(), reciver, amount, type
+        )
+        # print(f"transaction\n{transaction.to_json()}\n")
+
+        signature = self.sign(transaction.payload())
+
+        # It assign a signature for transaction parameter.
+        transaction.sign(signature)
+        # print(f"json\n{transaction.to_json()}\npayload\n{transaction.payload()}")
+        return transaction
