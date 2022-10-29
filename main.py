@@ -1,5 +1,6 @@
 from transaction import Transaction
 from wallet import Wallet
+from transaction_pool import TransactionPool
 
 if __name__ == '__main__':
     sender = 'sender'
@@ -8,15 +9,17 @@ if __name__ == '__main__':
     type = 'TRANSFER'
 
     wallet = Wallet()
-    # fraudulent_wallet = Wallet()
+    pool = TransactionPool()
 
     transaction = wallet.createTransaction(reciver, amount, type)
 
-    signature_valid = wallet.signatureValid(
-        transaction.payload(), transaction.signature, wallet.publicKeyString()
-    )
-    print(signature_valid)
-    # signature_valid = wallet.signatureValid(
-    #     transaction.payload(), transaction.signature, fraudulent_wallet.publicKeyString()
-    # )
-    # print(signature_valid)
+    if pool.transaction_exists(transaction) == False:
+        print("Once")
+        pool.add_transaction(transaction)
+
+    if pool.transaction_exists(transaction) == False:
+        # Transactions are already exist. So, it is not called.
+        print("Twice")
+        pool.add_transaction(transaction)
+
+    print(pool.transactions)
