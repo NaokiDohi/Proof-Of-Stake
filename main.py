@@ -1,6 +1,7 @@
 from transaction import Transaction
 from wallet import Wallet
 from transaction_pool import TransactionPool
+from block import Block
 
 if __name__ == '__main__':
     sender = 'sender'
@@ -17,9 +18,6 @@ if __name__ == '__main__':
         print("Once")
         pool.add_transaction(transaction)
 
-    if pool.transaction_exists(transaction) == False:
-        # Transactions are already exist. So, it is not called.
-        print("Twice")
-        pool.add_transaction(transaction)
+    block = Block(pool.transactions, "lastHash", "forger", 1)
 
-    print(pool.transactions)
+    print(block.to_json())
