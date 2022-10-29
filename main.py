@@ -1,4 +1,6 @@
-from Transaction import Transaction
+from transaction import Transaction
+from wallet import Wallet
+from transaction_pool import TransactionPool
 
 if __name__ == '__main__':
     sender = 'sender'
@@ -6,6 +8,18 @@ if __name__ == '__main__':
     amount = 1
     type = 'TRANSFER'
 
-    transaction = Transaction(sender, reciver, amount, type)
-    print(transaction)
-    print(transaction.to_json())
+    wallet = Wallet()
+    pool = TransactionPool()
+
+    transaction = wallet.createTransaction(reciver, amount, type)
+
+    if pool.transaction_exists(transaction) == False:
+        print("Once")
+        pool.add_transaction(transaction)
+
+    if pool.transaction_exists(transaction) == False:
+        # Transactions are already exist. So, it is not called.
+        print("Twice")
+        pool.add_transaction(transaction)
+
+    print(pool.transactions)
