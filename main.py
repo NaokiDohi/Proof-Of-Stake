@@ -1,6 +1,8 @@
 from transaction import Transaction
 from wallet import Wallet
 from transaction_pool import TransactionPool
+from block import Block
+from pprint import pprint
 
 if __name__ == '__main__':
     sender = 'sender'
@@ -9,6 +11,7 @@ if __name__ == '__main__':
     type = 'TRANSFER'
 
     wallet = Wallet()
+    fraudulentWallet = Wallet()
     pool = TransactionPool()
 
     transaction = wallet.createTransaction(reciver, amount, type)
@@ -17,9 +20,15 @@ if __name__ == '__main__':
         print("Once")
         pool.add_transaction(transaction)
 
-    if pool.transaction_exists(transaction) == False:
-        # Transactions are already exist. So, it is not called.
-        print("Twice")
-        pool.add_transaction(transaction)
+    block = wallet.createBlock(pool.transactions, 'lastHash', 1)
+    pprint(block.to_json())
 
-    print(pool.transactions)
+    signature_valid = Wallet.signatureValid(
+        block.payload(), block.signature, wallet.publicKeyString()
+    )
+    pprint(signature_valid)
+
+    signature_valid = Wallet.signatureValid(
+        block.payload(), block.signature, fraudulentWallet.publicKeyString()
+    )
+    pprint(signature_valid)
