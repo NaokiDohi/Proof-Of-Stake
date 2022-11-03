@@ -11,6 +11,13 @@ class Block():
         self.timestamp = time.time()
         self.signature = ''
 
+    @staticmethod
+    def genesis():
+        genesis_block = Block([], 'genesisHash', 'genesis', 0)
+        # You need to override the timestamp. Because, it is changed when it is every initialized.
+        genesis_block.timestamp = 0
+        return genesis_block
+
     def to_json(self):
         # The reason why use self.__dict__, it is self.transactions get instance.
         data = {}
