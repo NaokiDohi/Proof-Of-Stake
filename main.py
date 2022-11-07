@@ -5,37 +5,47 @@ from wallet import Wallet
 from transaction_pool import TransactionPool
 from block import Block
 from blockchain import Blockchain
+from account_model import AccountModel
 
 if __name__ == '__main__':
-    sender = 'sender'
-    reciver = 'reciver'
-    amount = 1
-    type = 'TRANSFER'
 
-    wallet = Wallet()
-    fraudulentWallet = Wallet()
+    block_chain = Blockchain()
     pool = TransactionPool()
 
-    transaction = wallet.createTransaction(reciver, amount, type)
+    alice = Wallet()
+    bob = Wallet()
+    exchange = Wallet()
+    forger = Wallet()
 
-    if pool.transaction_exists(transaction) == False:
-        print("Once")
+    exchange_transaction = exchange.createTransaction(
+        alice.publicKeyString(), 10, 'EXCHANGE'
+    )
+
+    if not pool.transaction_exists(exchange_transaction):
+        pool.add_transaction(exchange_transaction)
+
+    covered_transaction = block_chain.get_covered_transaction_set(
+        pool.transactions
+    )
+    last_hash = Utils().hash(block_chain.blocks[-1].payload()).hexdigest()
+    block_count = block_chain.blocks[-1].blockCount + 1
+    block_one = forger.createBlock(covered_transaction, last_hash, block_count)
+    block_chain.add_block(block_one)
+    pool.remove_from_pool(block_one.transactions)
+
+    # Alice wants to send 5 token to Bob.
+    transaction = alice.createTransaction(bob.publicKeyString(), 5, 'TRANSFER')
+
+    if not pool.transaction_exists(transaction):
         pool.add_transaction(transaction)
 
-    blockchain = Blockchain()
+    covered_transaction = block_chain.get_covered_transaction_set(
+        pool.transactions
+    )
+    last_hash = Utils().hash(block_chain.blocks[-1].payload()).hexdigest()
+    block_count = block_chain.blocks[-1].blockCount + 1
+    block_two = forger.createBlock(covered_transaction, last_hash, block_count)
+    block_chain.add_block(block_two)
+    pool.remove_from_pool(block_two.transactions)
 
-    last_hash = Utils().hash(blockchain.blocks[-1].payload()).hexdigest()
-    block_count = blockchain.blocks[-1].blockCount + 1
-    # block_count = blockchain.blocks[-1].blockCount + 2 # In this pattern, block is not added.
-    block = wallet.createBlock(pool.transactions, last_hash, block_count)
-    # block = wallet.createBlock(pool.transactions, 'lastHash', block_count) # In this pattern, block is not added.
-
-    if not blockchain.last_blockhash_valid(block):
-        print('Lash Blochash is not valid.')
-    if not blockchain.block_count_valid(block):
-        print('Blockcount is not valid.')
-
-    if blockchain.last_blockhash_valid(block) and blockchain.block_count_valid(block):
-        blockchain.add_block(block)
-
-    pprint(blockchain.to_json())
+    pprint(block_chain.to_json())
