@@ -15,6 +15,7 @@ if __name__ == '__main__':
     alice = Wallet()
     bob = Wallet()
     exchange = Wallet()
+    forger = Wallet()
 
     exchange_transaction = exchange.createTransaction(
         alice.publicKeyString(), 10, 'EXCHANGE'
@@ -23,6 +24,17 @@ if __name__ == '__main__':
     if not pool.transaction_exists(exchange_transaction):
         pool.add_transaction(exchange_transaction)
 
+    covered_transaction = block_chain.get_covered_transaction_set(
+        pool.transactions
+    )
+    last_hash = Utils().hash(block_chain.blocks[-1].payload()).hexdigest()
+    block_count = block_chain.blocks[-1].blockCount + 1
+    block_one = Block(
+        covered_transaction, last_hash,
+        forger.publicKeyString(), block_count
+    )
+    block_chain.add_block(block_one)
+
     # Alice wants to send 5 token to Bob.
     transaction = alice.createTransaction(bob.publicKeyString(), 5, 'TRANSFER')
 
@@ -30,5 +42,14 @@ if __name__ == '__main__':
         pool.add_transaction(transaction)
 
     covered_transaction = block_chain.get_covered_transaction_set(
-        pool.transactions)
-    print(covered_transaction)
+        pool.transactions
+    )
+    last_hash = Utils().hash(block_chain.blocks[-1].payload()).hexdigest()
+    block_count = block_chain.blocks[-1].blockCount + 1
+    block_two = Block(
+        covered_transaction, last_hash,
+        forger.publicKeyString(), block_count
+    )
+    block_chain.add_block(block_two)
+
+    pprint(block_chain.to_json())
