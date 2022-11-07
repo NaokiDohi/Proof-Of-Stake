@@ -29,11 +29,9 @@ if __name__ == '__main__':
     )
     last_hash = Utils().hash(block_chain.blocks[-1].payload()).hexdigest()
     block_count = block_chain.blocks[-1].blockCount + 1
-    block_one = Block(
-        covered_transaction, last_hash,
-        forger.publicKeyString(), block_count
-    )
+    block_one = forger.createBlock(covered_transaction, last_hash, block_count)
     block_chain.add_block(block_one)
+    pool.remove_from_pool(block_one.transactions)
 
     # Alice wants to send 5 token to Bob.
     transaction = alice.createTransaction(bob.publicKeyString(), 5, 'TRANSFER')
@@ -46,10 +44,8 @@ if __name__ == '__main__':
     )
     last_hash = Utils().hash(block_chain.blocks[-1].payload()).hexdigest()
     block_count = block_chain.blocks[-1].blockCount + 1
-    block_two = Block(
-        covered_transaction, last_hash,
-        forger.publicKeyString(), block_count
-    )
+    block_two = forger.createBlock(covered_transaction, last_hash, block_count)
     block_chain.add_block(block_two)
+    pool.remove_from_pool(block_two.transactions)
 
     pprint(block_chain.to_json())
