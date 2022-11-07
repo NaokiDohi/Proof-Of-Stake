@@ -43,6 +43,9 @@ class Blockchain():
         return covered_transactions
 
     def transaction_covered(self, transaction):
+        if transaction.type == 'EXCHAGE':
+            return True
+
         sender_blance = self.account_model.get_balances(
             transaction.senderPublicKey
         )
