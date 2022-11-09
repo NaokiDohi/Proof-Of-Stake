@@ -7,7 +7,12 @@ from block import Block
 from blockchain import Blockchain
 from account_model import AccountModel
 from node import Node
+import sys
 
 if __name__ == '__main__':
-    node = Node()
-    print(F'{node.blockchain}\n{node.transaction_pool}\n{node.wallet}')
+
+    host = sys.argv[1]
+    port = int(sys.argv[2])
+
+    node = Node(host, port)
+    node.start_p2p()

@@ -1,4 +1,5 @@
 import json
+import jsonpickle
 from Crypto.Hash import SHA256
 
 
@@ -10,3 +11,11 @@ class Utils():
         data_bytes = data_string.encode('utf-8')  # string => bytes
         data_hash = SHA256.new(data_bytes)
         return data_hash
+
+    @staticmethod
+    def encode(object):
+        return jsonpickle.encode(object)
+
+    @staticmethod
+    def decode(object):
+        return jsonpickle.decode(object)
