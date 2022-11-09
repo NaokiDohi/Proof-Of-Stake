@@ -30,3 +30,6 @@ class PeerDiscoveryHandler():
         while True:
             print("Discovery!!")
             time.sleep(10)
+
+    def handshake(self, connected_node):
+        self.socket_communication.send(connected_node, 'Handshake ...')

@@ -1,5 +1,6 @@
 from p2pnetwork.node import Node
 from node.p2p.peer_discovery_handler import PeerDiscoveryHandler
+from node.socket.socket_connector import SocketConnector
 
 
 class SocketCommunication(Node):
@@ -8,24 +9,28 @@ class SocketCommunication(Node):
         super(SocketCommunication, self).__init__(host, port)
         self.peers = []
         self.peer_discovery_handler = PeerDiscoveryHandler(self)
+        self.socket_connector = SocketConnector(host, port)
+
+    def connect_to_first_node(self):
+        if self.socket_connector.port != 10001:
+            self.connect_with_node('localhost', 10001)
 
     def start_socket_communication(self):
         self.start()
         self.peer_discovery_handler.start()
+        self.connect_to_first_node()
 
     def inbound_node_connected(self, connected_node):
-        print('Inbound Connection')
-        self.send_to_node(
-            connected_node,
-            'Hi! I am the node you connected to.'
-        )
+        self.peer_discovery_handler.handshake(connected_node)
 
     def outbound_node_connected(self, connected_node):
-        print('Outbound Connection')
-        self.send_to_node(
-            connected_node,
-            'Hi! I am the node who initialized the connection.'
-        )
+        self.peer_discovery_handler.handshake(connected_node)
 
     def node_message(self, connected_node, message):
         print(message)
+
+    def send(self, receiver, message):
+        self.send_to_node(receiver, message)
+
+    def broadcast(self, message):
+        self.send_to_nodes(message)
