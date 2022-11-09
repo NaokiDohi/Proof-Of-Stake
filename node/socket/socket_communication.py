@@ -1,4 +1,6 @@
+import json
 from p2pnetwork.node import Node
+from utils import Utils
 from node.p2p.peer_discovery_handler import PeerDiscoveryHandler
 from node.socket.socket_connector import SocketConnector
 
@@ -27,7 +29,10 @@ class SocketCommunication(Node):
         self.peer_discovery_handler.handshake(connected_node)
 
     def node_message(self, connected_node, message):
-        print(message)
+        message = Utils().decode(json.dumps(message))
+        if message.message_type == 'DISCOVERY':
+            self.peer_discovery_handler.handle_message(message)
+        return message
 
     def send(self, receiver, message):
         self.send_to_node(receiver, message)
