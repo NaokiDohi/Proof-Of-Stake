@@ -1,7 +1,7 @@
 import time
 import threading
 from utils import Utils
-from node.message import Message
+from node.p2p.message import Message
 
 
 class PeerDiscoveryHandler():
