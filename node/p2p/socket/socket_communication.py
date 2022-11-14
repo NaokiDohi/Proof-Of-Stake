@@ -2,7 +2,7 @@ import json
 from p2pnetwork.node import Node
 from utils import Utils
 from node.p2p.peer_discovery_handler import PeerDiscoveryHandler
-from node.socket.socket_connector import SocketConnector
+from node.p2p.socket.socket_connector import SocketConnector
 
 
 class SocketCommunication(Node):
