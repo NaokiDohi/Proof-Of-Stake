@@ -23,3 +23,15 @@ class Node():
         self.api = NodeAPI()
         self.api.inject_node(self)
         self.api.start(api_port)
+
+    def handle_transaction(self, transaction):
+        data = transaction.payload()
+        signature = transaction.signature
+        signer_public_key = transaction.senderPublicKey
+        signature_valid = Wallet.signatureValid(
+            data, signature, signer_public_key
+        )
+        transaction_exists = self.transaction_pool.transaction_exists(
+            transaction)
+        if not transaction_exists and signature_valid:
+            self.transaction_pool.add_transaction(transaction)
