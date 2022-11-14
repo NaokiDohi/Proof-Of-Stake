@@ -1,5 +1,7 @@
-from flask import Flask
+from flask import Flask, jsonify
 from flask_classful import FlaskView, route
+
+node = None
 
 
 class NodeAPI(FlaskView):
@@ -11,6 +13,21 @@ class NodeAPI(FlaskView):
         NodeAPI.register(self.app, route_base='/')
         self.app.run(host='localhost', port=api_port)
 
+    def inject_node(self, injected_node):
+        global node
+        node = injected_node
+
     @route('/info', methods=['GET'])
     def info(self):
         return 'This is a communication interface to a nodes blockchain', 200
+
+    @route('/blockchain', methods=['GET'])
+    def blockchain(self):
+        return node.blockchain.to_json(), 200
+
+    @route('/transactionPool', methods=['GET'])
+    def transaction_pool(self):
+        transactions = {}
+        for i, transaction in enumerate(node.transaction_pool.transactions):
+            transactions[i] = transaction.to_json()
+        return jsonify(transactions), 200
