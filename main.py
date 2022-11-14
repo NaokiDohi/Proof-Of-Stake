@@ -12,7 +12,9 @@ import sys
 if __name__ == '__main__':
 
     host = sys.argv[1]
-    port = int(sys.argv[2])
+    p2p_port = int(sys.argv[2])
+    api_port = int(sys.argv[3])
 
-    node = Node(host, port)
+    node = Node(host, p2p_port)
     node.start_p2p()
+    node.start_api(api_port)
