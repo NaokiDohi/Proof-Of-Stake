@@ -1,11 +1,11 @@
 from pprint import pprint
-from utils import Utils
-from transaction import Transaction
-from wallet import Wallet
-from transaction_pool import TransactionPool
-from block import Block
-from blockchain import Blockchain
-from account_model import AccountModel
+from blockchain.utils import Utils
+from blockchain.transaction import Transaction
+from blockchain.wallet import Wallet
+from blockchain.transaction.transaction_pool import TransactionPool
+from blockchain.block import Block
+from blockchain.block.blockchain import Blockchain
+from blockchain.account import AccountModel
 from node import Node
 import sys
 

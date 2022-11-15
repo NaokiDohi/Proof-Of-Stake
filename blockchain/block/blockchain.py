@@ -1,6 +1,6 @@
-from block import Block
-from utils import Utils
-from account_model import AccountModel
+from blockchain.block import Block
+from blockchain.utils import Utils
+from blockchain.account import AccountModel
 
 
 class Blockchain():

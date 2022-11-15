@@ -1,6 +1,6 @@
 import json
 from p2pnetwork.node import Node
-from utils import Utils
+from blockchain.utils import Utils
 from node.p2p.peer_discovery_handler import PeerDiscoveryHandler
 from node.p2p.socket.socket_connector import SocketConnector
 
