@@ -9,13 +9,15 @@ from node.rest import NodeAPI
 
 class Node():
 
-    def __init__(self, host, port):
+    def __init__(self, host, port, key=None):
         self.p2p = None
         self.host = host
         self.port = port
         self.transaction_pool = TransactionPool()
         self.wallet = Wallet()
         self.blockchain = Blockchain()
+        if key is not None:
+            self.wallet.from_key(key)
 
     def start_p2p(self):
         self.p2p = SocketCommunication(self.host, self.port)
@@ -25,6 +27,13 @@ class Node():
         self.api = NodeAPI()
         self.api.inject_node(self)
         self.api.start(api_port)
+
+    def forge(self):
+        forger = self.blockchain.next_forger()
+        if forger == self.wallet.publicKeyString():
+            print('I am the forger.')
+        else:
+            print('I am not the forger.')
 
     def handle_transaction(self, transaction):
         data = transaction.payload()
@@ -43,3 +52,6 @@ class Node():
             )
             encoded_message = Utils.encode(message)
             self.p2p.broadcast(encoded_message)
+            forging_required = self.transaction_pool.forger_required()
+            if forging_required:
+                self.forge()

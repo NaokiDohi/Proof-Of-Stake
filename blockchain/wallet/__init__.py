@@ -10,6 +10,12 @@ class Wallet():
     def __init__(self):
         self.keyPair = RSA.generate(2048)
 
+    def from_key(self, file):
+        key = ''
+        with open(file, 'r') as keyfile:
+            key = RSA.import_key(keyfile.read())
+        self.keyPair = key
+
     def sign(self, data):
         data_hash = Utils.hash(data)
         signature_scheme = PKCS1_v1_5.new(self.keyPair)

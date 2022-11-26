@@ -22,3 +22,9 @@ class TransactionPool():
             if insert:
                 pool_transactions.append(transaction)
         self.transactions = pool_transactions
+
+    def forger_required(self):
+        if len(self.transactions) >= 1:
+            return True
+        else:
+            return False
