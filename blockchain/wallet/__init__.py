@@ -36,9 +36,9 @@ class Wallet():
             'PEM').decode('utf-8')
         return publickey_string
 
-    def createTransaction(self, reciver, amount, type):
+    def createTransaction(self, receiver, amount, type):
         transaction = Transaction(
-            self.publicKeyString(), reciver, amount, type
+            self.publicKeyString(), receiver, amount, type
         )
         # print(f"transaction\n{transaction.to_json()}\n")
 

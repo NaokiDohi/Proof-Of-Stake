@@ -72,7 +72,7 @@ class Blockchain():
                 self.account_model.update_balance(sender, -amount)
         else:
             sender = transaction.senderPublicKey
-            receiver = transaction.reciverPublicKey
+            receiver = transaction.receiverPublicKey
             amount = transaction.amount
             self.account_model.update_balance(sender, -amount)
             self.account_model.update_balance(receiver, amount)
