@@ -81,3 +81,23 @@ class Blockchain():
         last_block_hash = Utils.hash(self.blocks[-1].payload()).hexdigest()
         next_forger = self.pos.forger(last_block_hash)
         return next_forger
+
+    def create_block(self, transaction_from_pool, forger_wallet):
+        covered_transactions = self.get_covered_transaction_set(
+            transaction_from_pool
+        )
+        self.execute_transactions(covered_transactions)
+        new_block = forger_wallet.createBlock(
+            covered_transactions,
+            Utils.hash(self.blocks[-1].payload()).hexdigest(),
+            len(self.blocks)
+        )
+        self.blocks.append(new_block)
+        return new_block
+
+    def transaction_exists(self, transaction):
+        for block in self.blocks:
+            for block_transaction in block.transactions:
+                if transaction.equals(block_transaction):
+                    return True
+        return False
