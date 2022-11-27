@@ -101,3 +101,18 @@ class Blockchain():
                 if transaction.equals(block_transaction):
                     return True
         return False
+
+    def forger_valid(self, block):
+        forger_publickey = self.pos.forger(block.lastHash)
+        proposed_block_forger = block.forger
+        if forger_publickey == proposed_block_forger:
+            return True
+        else:
+            return False
+
+    def transaction_valid(self, transactions):
+        covered_transactions = self.get_covered_transaction_set(transactions)
+        if len(covered_transactions) == len(transactions):
+            return True
+        else:
+            return False
