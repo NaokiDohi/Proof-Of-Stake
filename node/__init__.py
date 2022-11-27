@@ -1,3 +1,4 @@
+import copy
 from blockchain.utils import Utils
 from blockchain.transaction.transaction_pool import TransactionPool
 from blockchain.wallet import Wallet
@@ -80,9 +81,35 @@ class Node():
         )
         signature_valid = Wallet.signatureValid(block_hash, signature, forger)
 
-        if last_block_hash_valid and forger_valid and transaction_valid and signature_valid and block_count_valid:
+        if not block_count_valid:
+            self.request_chain()
+        if last_block_hash_valid and forger_valid and transaction_valid and signature_valid:
             self.blockchain.add_block(block)
             self.transaction_pool.remove_from_pool(block.transactions)
             message = Message(self.p2p.socket_connector, 'BLOCK', block)
             encoded_message = Utils.encode(message)
             self.p2p.broadcast(encoded_message)
+
+    def request_chain(self):
+        message = Message(self.p2p.socket_connector, 'BLOCKCHAINREQUEST', None)
+        encoded_message = Utils.encode(message)
+        self.p2p.broadcast(encoded_message)
+
+    def handle_blockchain_request(self, requesting_node):
+        message = Message(
+            self.p2p.socket_connector,
+            'BLOCKCHAIN', self.blockchain
+        )
+        encoded_message = Utils.encode(message)
+        self.p2p.send(requesting_node, encoded_message)
+
+    def handle_blockchain(self, blockchain):
+        local_blockchain = copy.deepcopy(self.blockchain)
+        local_block_count = len(local_blockchain.blocks)
+        received_chain_block_count = len(blockchain.blocks)
+        if local_block_count < received_chain_block_count:
+            for i, block in enumerate(blockchain.blocks):
+                if i >= local_block_count:
+                    local_blockchain.add_block(block)
+                    self.transaction_pool.remove_from_pool(block.transactions)
+            self.blockchain = local_blockchain
