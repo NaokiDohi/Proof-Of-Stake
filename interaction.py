@@ -1,5 +1,5 @@
-from wallet import Wallet
-from utils import Utils
+from blockchain.wallet import Wallet
+from blockchain.utils import Utils
 import requests
 
 if __name__ == '__main__':

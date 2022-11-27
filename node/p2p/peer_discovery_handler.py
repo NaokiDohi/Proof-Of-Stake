@@ -1,6 +1,6 @@
 import time
 import threading
-from utils import Utils
+from blockchain.utils import Utils
 from node.p2p.message import Message
 
 

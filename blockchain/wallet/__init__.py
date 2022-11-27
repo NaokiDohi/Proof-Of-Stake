@@ -1,14 +1,20 @@
 from Crypto.PublicKey import RSA
 from Crypto.Signature import PKCS1_v1_5
-from utils import Utils
-from transaction import Transaction
-from block import Block
+from blockchain.utils import Utils
+from blockchain.transaction import Transaction
+from blockchain.block import Block
 
 
 class Wallet():
 
     def __init__(self):
         self.keyPair = RSA.generate(2048)
+
+    def from_key(self, file):
+        key = ''
+        with open(file, 'r') as keyfile:
+            key = RSA.import_key(keyfile.read())
+        self.keyPair = key
 
     def sign(self, data):
         data_hash = Utils.hash(data)
