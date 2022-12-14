@@ -1,6 +1,7 @@
 import json
 from p2pnetwork.node import Node
 from blockchain.utils import Utils
+from node.p2p.message.types import MessageTypes
 from node.p2p.peer_discovery_handler import PeerDiscoveryHandler
 from node.p2p.socket.socket_connector import SocketConnector
 
@@ -31,17 +32,17 @@ class SocketCommunication(Node):
 
     def node_message(self, connected_node, message):
         message = Utils().decode(json.dumps(message))
-        if message.message_type == 'DISCOVERY':
+        if message.message_types == MessageTypes.DISCOVERY:
             self.peer_discovery_handler.handle_message(message)
-        elif message.message_type == 'TRANSACTION':
+        elif message.message_types == MessageTypes.TRANSACTION:
             transaction = message.data
             self.node.handle_transaction(transaction)
-        elif message.message_type == 'BLOCK':
+        elif message.message_types == MessageTypes.BLOCK:
             block = message.data
             self.node.handle_block(block)
-        elif message.message_type == 'BLOCKCHAINREQUEST':
+        elif message.message_types == MessageTypes.BLOCKCHAINREQUEST:
             self.node.handle_blockchain_request(connected_node)
-        elif message.message_type == 'BLOCKCHAIN':
+        elif message.message_types == MessageTypes.BLOCKCHAIN:
             blockchain = message.data
             self.node.handle_blockchain(blockchain)
 

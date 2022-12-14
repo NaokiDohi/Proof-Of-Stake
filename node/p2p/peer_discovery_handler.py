@@ -2,6 +2,7 @@ import time
 import threading
 from blockchain.utils import Utils
 from node.p2p.message import Message
+from node.p2p.message.types import MessageTypes
 
 
 class PeerDiscoveryHandler():
@@ -45,8 +46,8 @@ class PeerDiscoveryHandler():
         own_connector = self.socket_communication.socket_connector
         own_peers = self.socket_communication.peers
         data = own_peers
-        message_type = 'DISCOVERY'
-        message = Message(own_connector, message_type, data)
+        message_types = MessageTypes.DISCOVERY
+        message = Message(own_connector, message_types, data)
         encoded_message = Utils().encode(message)
         return encoded_message
 

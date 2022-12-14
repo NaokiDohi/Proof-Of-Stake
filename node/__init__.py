@@ -4,6 +4,7 @@ from blockchain.transaction.transaction_pool import TransactionPool
 from blockchain.wallet import Wallet
 from blockchain.block.blockchain import Blockchain
 from node.p2p.message import Message
+from node.p2p.message.types import MessageTypes
 from node.p2p.socket.socket_communication import SocketCommunication
 from node.rest import NodeAPI
 
@@ -37,7 +38,10 @@ class Node():
                 self.transaction_pool.transactions, self.wallet
             )
             self.transaction_pool.remove_from_pool(block.transactions)
-            message = Message(self.p2p.socket_connector, 'BLOCK', block)
+            message = Message(
+                self.p2p.socket_connector,
+                MessageTypes.BLOCK, block
+            )
             encoded_message = Utils.encode(message)
             self.p2p.broadcast(encoded_message)
         else:
@@ -60,7 +64,7 @@ class Node():
             self.transaction_pool.add_transaction(transaction)
             message = Message(
                 self.p2p.socket_connector,
-                'TRANSACTION', transaction
+                MessageTypes.TRANSACTION, transaction
             )
             encoded_message = Utils.encode(message)
             self.p2p.broadcast(encoded_message)
@@ -86,19 +90,25 @@ class Node():
         if last_block_hash_valid and forger_valid and transaction_valid and signature_valid:
             self.blockchain.add_block(block)
             self.transaction_pool.remove_from_pool(block.transactions)
-            message = Message(self.p2p.socket_connector, 'BLOCK', block)
+            message = Message(
+                self.p2p.socket_connector,
+                MessageTypes.BLOCK, block
+            )
             encoded_message = Utils.encode(message)
             self.p2p.broadcast(encoded_message)
 
     def request_chain(self):
-        message = Message(self.p2p.socket_connector, 'BLOCKCHAINREQUEST', None)
+        message = Message(
+            self.p2p.socket_connector,
+            MessageTypes.BLOCKCHAINREQUEST, None
+        )
         encoded_message = Utils.encode(message)
         self.p2p.broadcast(encoded_message)
 
     def handle_blockchain_request(self, requesting_node):
         message = Message(
             self.p2p.socket_connector,
-            'BLOCKCHAIN', self.blockchain
+            MessageTypes.BLOCKCHAIN, self.blockchain
         )
         encoded_message = Utils.encode(message)
         self.p2p.send(requesting_node, encoded_message)

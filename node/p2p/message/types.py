@@ -1,0 +1,9 @@
+from enum import Enum
+
+
+class MessageTypes(str, Enum):
+    DISCOVERY = "DISCOVERY"
+    TRANSACTION = "TRANSACTION"
+    BLOCK = "BLOCK"
+    BLOCKCHAIN = "BLOCKCHAIN"
+    BLOCKCHAINREQUEST = "BLOCKCHAINREQUEST"

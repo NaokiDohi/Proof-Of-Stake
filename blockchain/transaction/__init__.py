@@ -4,11 +4,11 @@ import copy
 
 
 class Transaction():
-    def __init__(self, senderPublicKey, receiverPublicKey, amount, type):
+    def __init__(self, senderPublicKey, receiverPublicKey, amount, types):
         self.senderPublicKey = senderPublicKey
         self.receiverPublicKey = receiverPublicKey
         self.amount = amount
-        self.type = type
+        self.types = types
         self.id = uuid.uuid1().hex
         self.timestamp = time.time()
         self.signature = ''

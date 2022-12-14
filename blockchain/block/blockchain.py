@@ -1,5 +1,6 @@
 from blockchain.block import Block
 from blockchain.utils import Utils
+from blockchain.utils.types import TransactionTypes
 from blockchain.account import AccountModel
 from blockchain.pos import ProofOfStake
 
@@ -46,7 +47,7 @@ class Blockchain():
         return covered_transactions
 
     def transaction_covered(self, transaction):
-        if transaction.type == 'EXCHANGE':
+        if transaction.types == TransactionTypes.EXCHANGE:
             return True
 
         sender_blance = self.account_model.get_balances(
@@ -63,7 +64,7 @@ class Blockchain():
             self.execute_transaction(transaction)
 
     def execute_transaction(self, transaction):
-        if transaction.type == 'STAKE':
+        if transaction.types == TransactionTypes.STAKE:
             sender = transaction.senderPublicKey
             receiver = transaction.receiverPublicKey
             if sender == receiver:
